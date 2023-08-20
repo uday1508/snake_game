@@ -1,0 +1,179 @@
+<html>
+<title>snake</title>
+<style>
+body
+{
+display:flex;
+background: white;
+ height:97%;
+align-items:center;
+justify-content:center;
+}
+canvas
+{
+  border : 5px  groove black ;
+}
+</style>
+
+<body>
+<canvas id =  "mycanvas" width="300px" height="300px"> </canvas> 
+<script>
+var canvas = document.getElementById('mycanvas');
+var context = canvas.getContext('2d');
+
+const grid = 10;
+var GO = false;
+var size = 2;
+var ate = true;
+var xa;
+var ya;
+var x  =  new Array(900);
+var y = new Array(900);
+
+
+const min = 1; 
+const max = 29;
+
+for(var  z=0;z<=size;z++)
+	{
+		x[z] = 40-z*10;
+		y[z] = 40;
+	}
+
+var ml = false;
+var mr =true ;
+var md= false;
+var mu= false;
+
+
+function Go()
+{
+context.fillStyle = 'red';
+context.textBaseline = 'middle';
+context.textAlign = 'center';
+context.font = "30px monospace";
+context.fillText('GAME OVER !',canvas.width/2,canvas.height/2);
+}
+
+function place()
+{
+ var r = Math.floor(Math.random()*(max - min) + min);
+ xa = r*grid;
+r = Math.floor(Math.random()*(max - min) + min);
+ya = r*grid;
+}
+
+function display(){
+context.clearRect(0,0,canvas.width,canvas.height);
+                                         if(GO)
+					{
+                                                               Go();
+					}
+					else
+							{
+							if(ate)
+							{
+							 place();
+                                                                                       ate = false;
+							}
+                                                                                      context.beginPath();
+   						context.fillStyle = "red";
+  						 context.arc(xa,ya,grid/2,0,2*Math.PI,false);
+  					           context.fill();
+  					           context.closePath();
+  			for(var z = 0; z <= size ; z++)
+			{
+  				  if(z==0)
+					{
+  						 context.beginPath();
+   						context.fillStyle = "green";
+  						 context.arc(x[z],y[z],grid/2,0,2*Math.PI,false);
+  					           context.fill();
+  					           context.closePath();
+					}
+                                               else
+					{
+  						context.beginPath();
+   						 context.fillStyle = "orange";
+  						 context.arc(x[z],y[z],grid/2,0,2*Math.PI,false);
+   						context.fill();
+   						context.closePath();
+					}
+			}
+							}
+}
+
+  onkeydown = function(e) 
+{
+ var key =  e.keyCode;
+if((key == 37 )&& (!mr))
+{
+  ml = true;
+mu = false;
+md = false;
+}  
+if((key == 39) && (!ml))
+{
+  mr = true;
+mu = false;
+md = false;
+} 
+if((key == 38) && (!md))
+{
+  ml = false;
+mu = true;
+mr = false;
+} 
+if((key == 40) && (!mu))
+{
+  ml = false;
+mr = false;
+md = true;
+} 
+}
+function move()
+{
+  for(var  z = size  ; z>0 ;z--)
+  {
+   x[z] = x[(z-1)];
+  y[z] = y[(z-1)];
+  }
+if(ml) x[0] = x[0] - grid;
+if(mr) x[0] = x[0] + grid;
+if(mu)  y[0] = y[0] - grid;
+if(md)  y[0] = y[0] + grid;
+
+}
+
+
+
+function eat()
+{
+if(xa == x[0] && y[0] == ya){
+ size++;
+ate = true;
+}
+}
+function validate()
+{
+for(var z = size ; z>0;z--)
+{
+ if(z>4&&x[0] == x[z] && y[0] == y[z]) GO = true;
+}
+if(y[0] >= canvas.height+1) GO = true;
+if(y[0] < 3) GO = true;
+if(x[0] >= canvas.height+1) GO = true;
+if(x[0] < 3) GO = true;
+}
+function cyclic()
+{
+eat();
+validate();
+ move();
+display();
+setTimeout("cyclic()",50);
+}
+cyclic();
+</script>
+</body>
+</html>
